@@ -15,8 +15,7 @@ Create a Conda environment:
 
 ``` batch
 conda create -n quadcopter python=3.6 matplotlib numpy pandas
-source activate quadcopter
-python -m ipykernel install --user --name quadcopter --display-name "quadcopter"
+conda activate quadcopter
  ```
 
 Create an IPython kernel for the quadcopter environment:
