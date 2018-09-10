@@ -53,7 +53,7 @@ class PhysicsSim():
 
     def reset(self):
         self.time = 0.0
-        self.pose = np.array([0.0, 0.0, 10.0, 0.0, 0.0, 0.0]) if self.init_pose is None else np.copy(self.init_pose)
+        self.pose = np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0]) if self.init_pose is None else np.copy(self.init_pose)
         self.v = np.array([0.0, 0.0, 0.0]) if self.init_velocities is None else np.copy(self.init_velocities)
         self.angular_v = np.array([0.0, 0.0, 0.0]) if self.init_angle_velocities is None else np.copy(self.init_angle_velocities)
         self.linear_accel = np.array([0.0, 0.0, 0.0])
@@ -136,9 +136,11 @@ class PhysicsSim():
         for ii in range(3):
             if position[ii] <= self.lower_bounds[ii]:
                 new_positions.append(self.lower_bounds[ii])
+                #print("Lower bounds exceeded {} <= {}".format(position[ii], self.lower_bounds[ii]))
                 self.done = True
             elif position[ii] > self.upper_bounds[ii]:
                 new_positions.append(self.upper_bounds[ii])
+                #print("Upper bounds exceeded {} > {}".format(position[ii], self.upper_bounds[ii]))
                 self.done = True
             else:
                 new_positions.append(position[ii])
@@ -146,5 +148,6 @@ class PhysicsSim():
         self.pose = np.array(new_positions + list(angles))
         self.time += self.dt
         if self.time > self.runtime:
+            #print("Time exceeded {} > {}".format(self.time, self.runtime))
             self.done = True
         return self.done

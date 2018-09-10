@@ -33,7 +33,7 @@ class Basic_Agent():
             self.learn()
 
     def act(self, state):
-        new_thrust = 403
+        new_thrust = 400
         return [new_thrust for x in range(4)]
 
     def learn(self):
