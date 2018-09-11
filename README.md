@@ -14,7 +14,7 @@ cd quadcopter-project
 Create a Conda environment:
 
 ``` batch
-conda create -n quadcopter python=3.6 matplotlib numpy pandas
+conda create -n quadcopter python=3.6 matplotlib numpy pandas jupyter keras-gpu
 conda activate quadcopter
  ```
 

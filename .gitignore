@@ -3,6 +3,6 @@ __pycache__/
 .ipynb_checkpoints/
 .DS_store
 data.txt
-videos/
+video/
 data/
 

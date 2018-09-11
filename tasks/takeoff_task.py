@@ -13,7 +13,6 @@ class Task():
             init_angle_velocities: initial radians/second for each of the three Euler angles
             runtime: time limit for each episode
             target_pos: target/goal (x,y,z) position for the agent
-            show_animation: render drone animation
         """
         # Simulation
         self.sim = PhysicsSim(init_pose, init_velocities, init_angle_velocities, runtime) 
@@ -27,9 +26,6 @@ class Task():
         # Goal
         self.target_pos = target_pos if target_pos is not None else np.array([0., 0., 0.]) 
         self.initial_dist_to_target = self.distance(self.target_pos, init_pose[:3])
-        self.take_off = False
-        self.reached_target = False
-
 
     def distance_squared(self, ptA, ptB):
         """ Returns the square of the distance between ptA and ptB. """
@@ -44,31 +40,24 @@ class Task():
         dist = np.linalg.norm(ptA - ptB)
         return dist
 
+    def distance2d(self, ptA, ptB):
+        """ Returns 2d the distance between ptA and ptB. """
+        ptA[2] = 0
+        ptB[2] = 0
+        dist = np.linalg.norm(ptA - ptB)
+        return dist
+
     def get_reward(self):
         """Uses current pose of sim to return reward."""
         
-        d = self.distance(self.sim.pose[:3], self.target_pos)
+        # distance reward
+        #d = self.distance(self.sim.pose[:3], self.target_pos)
+        #reward = 1 - d / self.initial_dist_to_target
+   
+        reward = np.tanh(1 - 0.003*(abs(self.sim.pose[:3] - self.target_pos))).sum()
 
-        # distance penality
-        reward = -0.01 * d
-
-        # time penality
-        #reward += -0.01 * self.sim.time
-
-        # bonus for taking off
-        if not self.take_off and self.sim.pose[2] > 0.5:
-            reward += 10
-            self.take_off = True
-
-        # bonus for being close to target
-        if not self.reached_target and d < 1.0:
-            reward += 10
-            self.reached_target = True
-
-        #reward = 1.-.3*(abs(self.sim.pose[:3] - self.target_pos)).sum()
-        
-        #reward = np.tanh(1 - 0.003*(abs(self.sim.pose[:3] - self.target_pos))).sum()
-
+        if self.sim.pose[2] > self.target_pos[2]:
+            reward = -1.0 * abs(reward)
 
         return reward
 
@@ -76,17 +65,10 @@ class Task():
         """Uses action to obtain next state, reward, done."""
         reward = 0
         pose_all = []
-
         for _ in range(self.action_repeat):
             done = self.sim.next_timestep(rotor_speeds) # update the sim pose and velocities
-            
             reward += self.get_reward() 
-
-            if self.reached_target:
-                done = True
-  
             pose_all.append(self.sim.pose)
-            
         next_state = np.concatenate(pose_all)
         return next_state, reward, done
 
@@ -94,7 +76,4 @@ class Task():
         """Reset the sim to start a new episode."""
         self.sim.reset()
         state = np.concatenate([self.sim.pose] * self.action_repeat) 
-
-        self.take_off = False
-        self.reached_target = False
         return state

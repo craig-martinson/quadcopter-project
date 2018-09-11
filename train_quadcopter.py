@@ -1,4 +1,5 @@
 import sys
+import os
 import math
 import numpy as np
 import pickle
@@ -11,7 +12,7 @@ import argparse
 def get_input_args():
     parser = argparse.ArgumentParser()
 
-    parser.add_argument('num_episodes', type=int, default=1000,
+    parser.add_argument('num_episodes', nargs='?', type=int, default=500,
                         help='Number of episodes to train')
 
     return parser.parse_args()
@@ -19,10 +20,14 @@ def get_input_args():
 def main():
     in_args = get_input_args()
 
+    exportPath = './data/'
+    if not os.path.exists(exportPath):
+        os.makedirs(exportPath)
+
     # z axis is up
     init_pose = np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0]) 
-    target_pos = np.array([0.0, 0.0, 50.0])
-    task = Task(init_pose=init_pose, target_pos=target_pos, runtime=30.0)
+    target_pos = np.array([0.0, 0.0, 10.0])
+    task = Task(init_pose=init_pose, target_pos=target_pos, runtime=15.0)
     #agent = PolicySearch_Agent(task) 
     #agent = Basic_Agent(task) 
     agent = DDPG_Agent(task)
@@ -40,19 +45,20 @@ def main():
         score = 0
 
         results = {
-            "x": [],
-            "y": [],
-            "z": [],
-            "phi": [],
-            "theta": [],
-            "psi": [],
-            "reward": [],
+            #'time': [],
+            'x': [],
+            'y': [],
+            'z': [],
+            'phi': [],
+            'theta': [],
+            'psi': [],
+            'reward': [],
             }
 
         while True:
             action = agent.act(state)  
             next_state, reward, done = task.step(action)
-    
+
             agent.step(action, reward, next_state, done)
             state = next_state
             score += reward
@@ -60,6 +66,7 @@ def main():
             low_score = min(low_score, score)
 
             # track the results for offline analysis
+           # results['time'].append(task.sim.time)
             results['x'].append(state[0])
             results['y'].append(state[1])
             results['z'].append(state[2])
@@ -69,14 +76,15 @@ def main():
             results['reward'].append(reward)
             
             if done:
-                print("\rEpisode = {:4d}, score = {:7.3f}, low score = {:7.3f}, high score = {:7.3f}".format(i_episode, score, low_score, high_score))
+                print("\rEpisode = {:4d}, score = {:7.3f}, low score = {:7.3f}, high score = {:7.3f}".format(i_episode, score, low_score, high_score), end="")
                 break
 
         resultsAll.append(results)
 
         sys.stdout.flush()
 
-    with open('data/results0.bin', 'wb') as pickleFile:
+    # save results for later analysis
+    with open("{}results0.bin".format(exportPath), 'wb') as pickleFile:
         pickle.dump(resultsAll, pickleFile)
 
     print("\n")
