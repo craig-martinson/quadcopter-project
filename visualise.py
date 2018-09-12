@@ -132,9 +132,9 @@ class Quadrotor():
         # plot track
         self.ax.plot(self.x_data, self.y_data, self.z_data, 'b:', zdir='z')
 
-        x_bounds = max(5, self.tx + 5)
-        y_bounds = max(5, self.ty + 5)
-        z_bounds = max(5, self.tz + 5)
+        x_bounds = 7.5
+        y_bounds = 7.5
+        z_bounds = 15
         self.ax.set_xlim(-x_bounds, x_bounds)
         self.ax.set_ylim(-y_bounds, y_bounds)
         self.ax.set_zlim(0, z_bounds)
@@ -172,7 +172,7 @@ def main():
     with open('data/results0.bin', 'rb') as pickleFile:
         results = pickle.load(pickleFile)
 
-    exportPath = './video/frames/'
+    exportPath = './video/'
 
     if in_args.save:        
         if not os.path.exists(exportPath):
@@ -235,7 +235,7 @@ def main():
             
     if in_args.save:
         # Save all frames to animated gif
-        imageio.mimsave("{}movie.gif".format(exportPath), images)
+        imageio.mimsave("movie.gif", images)
 
 # Call to main function to run the program
 if __name__ == "__main__":

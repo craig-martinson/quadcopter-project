@@ -76,7 +76,7 @@ class DDPG_Agent():
         self.critic_target.model.set_weights(self.critic_local.model.get_weights())
         self.actor_target.model.set_weights(self.actor_local.model.get_weights())
 
-        # Noise process
+        # Noise process long-running mean / the speed of mean reversion / the volatility parameter
         self.exploration_mu = 0
         self.exploration_theta = 0.15
         self.exploration_sigma = 0.2

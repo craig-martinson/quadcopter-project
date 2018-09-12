@@ -45,7 +45,7 @@ class PhysicsSim():
         I_z = 1 / 12. * self.mass * (width**2 + length**2)
         self.moments_of_inertia = np.array([I_x, I_y, I_z])  # moments of inertia
 
-        env_bounds = 300.0  # 300 m / 300 m / 300 m
+        env_bounds = 15.0  # 300 m / 300 m / 300 m
         self.lower_bounds = np.array([-env_bounds / 2, -env_bounds / 2, 0])
         self.upper_bounds = np.array([env_bounds / 2, env_bounds / 2, env_bounds])
 
