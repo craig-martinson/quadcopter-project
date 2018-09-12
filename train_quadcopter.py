@@ -25,7 +25,7 @@ def main():
         os.makedirs(exportPath)
 
     # z axis is up
-    init_pose = np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0]) 
+    init_pose = np.array([0.0, 0.0, 1.0, 0.0, 0.0, 0.0]) 
     target_pos = np.array([0.0, 0.0, 10.0])
     task = Task(init_pose=init_pose, target_pos=target_pos, runtime=15.0)
     #agent = PolicySearch_Agent(task) 
@@ -44,16 +44,19 @@ def main():
         state = agent.reset_episode() 
         score = 0
 
-        results = {
-            #'time': [],
+        episode_results = {
+            'time': [],
             'x': [],
             'y': [],
             'z': [],
             'phi': [],
             'theta': [],
             'psi': [],
+            'vx': [],
+            'vy': [],
+            'vz': [],
             'reward': [],
-            }
+        }
 
         while True:
             action = agent.act(state)  
@@ -66,20 +69,23 @@ def main():
             low_score = min(low_score, score)
 
             # track the results for offline analysis
-           # results['time'].append(task.sim.time)
-            results['x'].append(state[0])
-            results['y'].append(state[1])
-            results['z'].append(state[2])
-            results['phi'].append(state[3])
-            results['theta'].append(state[4])
-            results['psi'].append(state[5])
-            results['reward'].append(reward)
+            episode_results['time'].append(task.sim.time)
+            episode_results['x'].append(state[0])
+            episode_results['y'].append(state[1])
+            episode_results['z'].append(state[2])
+            episode_results['phi'].append(state[3])
+            episode_results['theta'].append(state[4])
+            episode_results['psi'].append(state[5])
+            episode_results['vx'].append(state[6])
+            episode_results['vy'].append(state[7])
+            episode_results['vz'].append(state[8])
+            episode_results['reward'].append(reward)
             
             if done:
                 print("\rEpisode = {:4d}, score = {:7.3f}, low score = {:7.3f}, high score = {:7.3f}".format(i_episode, score, low_score, high_score), end="")
                 break
 
-        resultsAll.append(results)
+        resultsAll.append(episode_results)
 
         sys.stdout.flush()
 

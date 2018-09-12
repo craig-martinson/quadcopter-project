@@ -18,7 +18,7 @@ class Task():
         self.sim = PhysicsSim(init_pose, init_velocities, init_angle_velocities, runtime) 
         self.action_repeat = 3
 
-        self.state_size = self.action_repeat * 6
+        self.state_size = self.action_repeat * 9
         self.action_low = 0
         self.action_high = 900
         self.action_size = 4
@@ -50,16 +50,52 @@ class Task():
     def get_reward(self):
         """Uses current pose of sim to return reward."""
         
-        # distance reward
-        #d = self.distance(self.sim.pose[:3], self.target_pos)
-        #reward = 1 - d / self.initial_dist_to_target
-   
-        reward = np.tanh(1 - 0.003*(abs(self.sim.pose[:3] - self.target_pos))).sum()
+        # Calculate distance from target
+        dist_from_target = np.sqrt(np.square(self.sim.pose[:3] - self.target_pos).sum())
 
-        if self.sim.pose[2] > self.target_pos[2]:
-            reward = -1.0 * abs(reward)
+        # Calculate distance from vertical axis
+        dist_from_axis = np.sqrt(np.square(self.sim.pose[:2] - self.target_pos[:2]).sum())
 
+        # Calculate angular deviation
+        angular_deviation = np.sqrt(np.square(self.sim.pose[3:]).sum())
+        
+        # Calculate velocity in xy plane
+        non_z_v = np.square(self.sim.v[:2]).sum()
+
+        # Calculate overall velocity
+        vel = np.square(self.sim.v[:3]).sum()
+
+        reward = 0
+
+        if dist_from_target > 1.5:
+            # Penalties to encourage the quadcopter to fly toward target
+            reward = 1.0 - 0.01 * dist_from_target
+
+            # Penalty based on angular deviation to encourage the quadcopter to remain upright
+            reward -= 0.01 * angular_deviation
+
+            # Penalty based on movement in the xy plane to encourage the quadcopter to fly vertically
+            if dist_from_axis > 4:
+                reward -= 0.1
+
+            # Penalty for high velocity to encourage quadcopter to fly slower
+            if vel > 10.0:
+                reward -= 0.1
+
+        else:
+            # Rewards to encourage loitering
+            reward += 0.2
+
+            if vel > 1.0:
+                reward -= 0.1
+
+            # Reward for time to encourage quadcopter to remain in the air
+            reward += 0.001 * self.sim.time
+
+        # clamp reward to [-1, 1]
+        #reward = min(1.0, max(-1.0, reward))
         return reward
+
 
     def step(self, rotor_speeds):
         """Uses action to obtain next state, reward, done."""
@@ -69,11 +105,13 @@ class Task():
             done = self.sim.next_timestep(rotor_speeds) # update the sim pose and velocities
             reward += self.get_reward() 
             pose_all.append(self.sim.pose)
+            pose_all.append(self.sim.v)
         next_state = np.concatenate(pose_all)
         return next_state, reward, done
 
     def reset(self):
         """Reset the sim to start a new episode."""
         self.sim.reset()
-        state = np.concatenate([self.sim.pose] * self.action_repeat) 
+        pose_all = np.append(self.sim.pose, self.sim.v)
+        state = np.concatenate([pose_all] * self.action_repeat) 
         return state

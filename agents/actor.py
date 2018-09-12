@@ -22,7 +22,7 @@ class Actor:
         self.action_range = self.action_high - self.action_low
 
         # Initialize any other variables here
-        self.learning_rate = 0.001
+        self.learning_rate = 0.0001
 
         self.build_model()
 
@@ -40,17 +40,17 @@ class Actor:
         net = layers.Dense(units=400, kernel_regularizer=layers.regularizers.l2(1e-6))(states)
         net = layers.BatchNormalization()(net)
         net = layers.Activation('relu')(net)
+        
         net = layers.Dense(units=300, kernel_regularizer=layers.regularizers.l2(1e-6))(net)
         net = layers.BatchNormalization()(net)
         net = layers.Activation('relu')(net)
 
-        # Add final output layer with sigmoid activation
-        raw_actions = layers.Dense(units=self.action_size, activation='sigmoid',
-            name='raw_actions')(net)
+        # Add final output layer with weights initialised to Uniform[-3e-3, 3e-3]
+        #raw_actions = layers.Dense(units=self.action_size, activation='sigmoid', name='raw_actions')(net)
+        raw_actions = layers.Dense(units=self.action_size, activation='sigmoid', kernel_initializer = layers.initializers.RandomUniform(minval=-0.003, maxval=0.003), name='raw_actions')(net)
 
         # Scale [0, 1] output for each action dimension to proper range
-        actions = layers.Lambda(lambda x: (x * self.action_range) + self.action_low,
-            name='actions')(raw_actions)
+        actions = layers.Lambda(lambda x: (x * self.action_range) + self.action_low, name='actions')(raw_actions)
 
         # Create Keras model
         self.model = models.Model(inputs=states, outputs=actions)

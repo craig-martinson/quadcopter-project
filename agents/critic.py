@@ -34,12 +34,9 @@ class Critic:
         net_states = layers.Dense(units=400, kernel_regularizer=layers.regularizers.l2(1e-6))(states)
         net_states = layers.BatchNormalization()(net_states)
         net_states = layers.Activation('relu')(net_states)
-        net_states = layers.Dense(units=300, kernel_regularizer=layers.regularizers.l2(1e-6))(net_states)
 
         # Add hidden layer(s) for action pathway
-        #net_actions = layers.Dense(units=32, activation='relu')(actions)
-        #net_actions = layers.Dense(units=64, activation='relu')(net_actions)
-
+        net_states = layers.Dense(units=300, kernel_regularizer=layers.regularizers.l2(1e-6))(net_states)
         net_actions = layers.Dense(units=300, kernel_regularizer=layers.regularizers.l2(1e-6))(actions)
 
         # Try different layer sizes, activations, add batch normalization, regularizers, etc.

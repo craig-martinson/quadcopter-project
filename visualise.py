@@ -49,10 +49,10 @@ class Quadrotor():
         self.tz = 0
 
         #fig = plt.figure(figsize=(16,12), dpi=72)
-        fig = plt.figure(dpi=100)
-        #fig = plt.figure()
-        self.ax = plt.subplot2grid((24, 24), (0, 0), colspan=24, rowspan=24, projection='3d')
-        #self.ax5 = plt.subplot2grid((24, 24), (20, 0), colspan=24, rowspan=4)
+        #fig = plt.figure(dpi=100)
+        fig = plt.figure()
+        self.ax = plt.subplot2grid((32, 24), (0, 0), colspan=20, rowspan=20, projection='3d')
+        self.ax5 = plt.subplot2grid((32, 24), (24, 0), colspan=20, rowspan=8)
         self.update_pose(x, y, z, roll, pitch, yaw, reward, title, filepath)
 
     def set_target(self, x, y, z):
@@ -140,11 +140,11 @@ class Quadrotor():
         self.ax.set_zlim(0, z_bounds)
 
         # Plot reward
-        #self.ax5.plot(self.reward_data, label='Reward', c=[0,0,0,0.7], linewidth=1.0)
+        self.ax5.plot(self.reward_data, label='Reward', c=[0,0,0,0.7], linewidth=1.0)
         #self.ax5.set_xlim(0, max(30, len(self.reward_data)))
         #self.ax5.set_ylim(-1, 1)
-        #self.ax5.set_xlabel('t [s]')
-        #self.ax5.set_ylabel('Reward')
+        self.ax5.set_xlabel('t [s]')
+        self.ax5.set_ylabel('Reward')
 
         if filepath:
             plt.savefig(filepath)
