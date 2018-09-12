@@ -49,8 +49,8 @@ class Quadrotor():
         self.tz = 0
 
         #fig = plt.figure(figsize=(16,12), dpi=72)
-        fig = plt.figure(dpi=120)
-        #fig = plt.figure()
+        #fig = plt.figure(dpi=120)
+        fig = plt.figure()
         self.ax = plt.subplot2grid((32, 24), (0, 0), colspan=20, rowspan=20, projection='3d')
         self.ax5 = plt.subplot2grid((32, 24), (24, 0), colspan=20, rowspan=8)
         self.update_pose(x, y, z, roll, pitch, yaw, reward, title, filepath)

@@ -1,6 +1,6 @@
 # Deep Reinforcement Learning Project
 
-Deep Reinforcement Learning Project project developed for Udacity's Deep Learning Nanodegree. The goal of this project is to use deep reinforcement learning to teach a quadcopter how to fly. The algorithm used for learning is Deep Deterministic Policy Gradients (DDPG) as described in the [Continuous control with deep reinforcement learning](https://arxiv.org/abs/1509.02971) paper.
+Deep Reinforcement Learning Project developed for Udacity's Deep Learning Nanodegree. The goal of this project is to use deep reinforcement learning to teach a quadcopter how to fly. The algorithm used for learning is Deep Deterministic Policy Gradients (DDPG) as described in the [Continuous control with deep reinforcement learning](https://arxiv.org/abs/1509.02971) paper.
 
 ![Quadcopter](movie.gif)
 
