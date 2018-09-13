@@ -60,7 +60,7 @@ optional arguments:
 For example the following will generate [movie.gif](movie.gif) containing the top five training episodes in the root of the repository:
 
 ``` batch
-python visualise.py 5
+python visualise.py 5 --save
 ```
 
 ## References
