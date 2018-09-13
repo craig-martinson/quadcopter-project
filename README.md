@@ -1,6 +1,6 @@
 # Deep Reinforcement Learning Project
 
-Deep Reinforcement Learning Project developed for Udacity's Deep Learning Nanodegree. The goal of this project is to use deep reinforcement learning to teach a quadcopter how to fly. The algorithm used for learning is Deep Deterministic Policy Gradients (DDPG) as described in the [Continuous control with deep reinforcement learning](https://arxiv.org/abs/1509.02971) paper.
+Deep Reinforcement Learning Project developed for Udacity's Deep Learning Nanodegree. The goal for this project was to use deep reinforcement learning to teach a quadcopter how to fly. The algorithm used for learning was Deep Deterministic Policy Gradients (DDPG) as described in the [Continuous control with deep reinforcement learning](https://arxiv.org/abs/1509.02971) paper.
 
 ![Quadcopter](movie.gif)
 
@@ -45,7 +45,7 @@ Before running code, change the kernel to match the quadcopter environment by us
 
 Visualisation of agent learning can be done using visualise.py:
 
-```
+``` batch
 python visualise.py --help
 usage: visualise.py [-h] [--save] [num_episodes]
 
@@ -57,9 +57,9 @@ optional arguments:
   --save        Write animation to disk instead of displaying
 ```
 
-For example the following will generate a movie containing the tope five training episodes:
+For example the following will generate [movie.gif](movie.gif) containing the top five training episodes in the root of the repository:
 
-```
+``` batch
 python visualise.py 5
 ```
 
