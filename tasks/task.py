@@ -25,33 +25,13 @@ class Task():
 
         # Goal
         self.target_pos = target_pos if target_pos is not None else np.array([0., 0., 0.]) 
-        self.initial_dist_to_target = self.distance(self.target_pos, init_pose[:3])
-
-    def distance_squared(self, ptA, ptB):
-        """ Returns the square of the distance between ptA and ptB. """
-        return (
-            ((ptA[0] - ptB[0]) ** 2) +
-            ((ptA[1] - ptB[1]) ** 2) +
-            ((ptA[2] - ptB[2]) ** 2)
-        )
-
-    def distance(self, ptA, ptB):
-        """ Returns the distance between ptA and ptB. """
-        dist = np.linalg.norm(ptA - ptB)
-        return dist
-
-    def distance2d(self, ptA, ptB):
-        """ Returns 2d the distance between ptA and ptB. """
-        ptA[2] = 0
-        ptB[2] = 0
-        dist = np.linalg.norm(ptA - ptB)
-        return dist
-
+ 
     def get_reward(self):
         """Uses current pose of sim to return reward."""
         
         # Calculate distance from target
         dist_from_target = np.sqrt(np.square(self.sim.pose[:3] - self.target_pos).sum())
+        #dist_from_target_squared = np.square(self.sim.pose[:3] - self.target_pos).sum()
 
         # Calculate distance from vertical axis
         #dist_from_axis = np.sqrt(np.square(self.sim.pose[:2] - self.target_pos[:2]).sum())
@@ -65,10 +45,11 @@ class Task():
         # Calculate overall velocity
         #vel = np.square(self.sim.v[:3]).sum()
 
-        penalty = 0.01 * dist_from_target * dist_from_target
+        penalty = 0.004 * dist_from_target * dist_from_target
+        #penalty = 0.015 * dist_from_target_squared
 
         # Penalty based on angular deviation to encourage the quadcopter to remain upright
-        penalty += 0.02 * angular_deviation
+        penalty += 0.008 * angular_deviation
 
         # Penalty based on movement in the xy plane to encourage the quadcopter to fly vertically
         #if dist_from_axis > 4:
@@ -78,11 +59,15 @@ class Task():
         #if vel > 10.0:
         #   penalty += 0.1
 
-        if self.sim.pose[2] > self.target_pos[2] + 1:
-            penalty += 0.1
+        #if self.sim.pose[2] > self.target_pos[2] + 5:
+        #    penalty += 0.01
 
+        bonus = 1.0
+        #if dist_from_target < 0.5:
+        #    bonus += 0.01
+            
         # Calculate reward
-        reward = 1.0 - penalty
+        reward = bonus - penalty
         # Reward for time to encourage quadcopter to remain in the air
         #reward += 0.001 * self.sim.time
 

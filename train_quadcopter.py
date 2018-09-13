@@ -6,7 +6,7 @@ import pickle
 #from agents.policy_search import PolicySearch_Agent
 #from agents.basic_agent import Basic_Agent
 from agents.agent import DDPG_Agent
-from tasks.takeoff_task import Task
+from tasks.task import Task
 import argparse
 
 def get_input_args():
