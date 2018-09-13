@@ -16,14 +16,14 @@ cd quadcopter-project
 Create a Conda GPU environment:
 
 ``` batch
-conda create -n quadcopter python=3.6 matplotlib numpy pandas jupyter keras-gpu
+conda create -n quadcopter python=3.6 matplotlib numpy pandas jupyter keras-gpu imageio
 conda activate quadcopter
  ```
 
  or a Conda CPU environment:
 
  ``` batch
-conda create -n quadcopter python=3.6 matplotlib numpy pandas jupyter keras
+conda create -n quadcopter python=3.6 matplotlib numpy pandas jupyter keras imageio
 conda activate quadcopter
  ```
 
